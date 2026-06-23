@@ -1,0 +1,27 @@
+hyperparameters:
+  t_max: 10              # rollout length < maxSteps so bootstrapping kicks in
+  max_episodes: 15000   # total episodes to run across workers
+  gamma: 0.95            # discount factor (lower for short episodes)
+  entropy_coef: 0.005    # lower entropy since sigma starts tight
+  value_loss_coef: 0.5   # value loss coefficient
+  lr: 2.0e-4             # learning rate
+  num_workers: 3      # number of parallel worker processes
+  grad_clip: 40.0        # gradient clipping threshold
+
+network:
+  state_size: [40, 40]   # height, width of processed image
+  shared_layers: [128, 64]
+  critic_hidden_layers: [64]
+  actor_hidden_layers: [64]
+  init_type: "xavier-uniform"
+
+logging:
+  log_interval: 10       # episodes between logging
+  save_interval: 1000     # episodes between model saving
+  model_dir: "models"
+
+# Model changes vs v5:
+#   - AdaptiveAvgPool2d(2) instead of (1) — 256 features, preserves spatial info
+#   - entropy_coef: 0.005 (was 0.01)
+#   - sigma init: -1.0, obs normalization, t_max=10, gamma=0.95 (same as v5)
+# Results: 52% success rate on 100 episodes eval (best)
